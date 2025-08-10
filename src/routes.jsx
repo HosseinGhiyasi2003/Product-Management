@@ -1,11 +1,11 @@
 import { Navigate } from "react-router-dom";
-import Login from "./components/Login";
-import SignUp from "./components/SignUp";
+import SignUpPage from "./pages/SignUpPage";
+import LoginPage from "./pages/LoginPage";
 
 let routes = [
   {path: '/', element: <Navigate to='/login' />},
-  {path: '/login', element: <Login />},
-  {path: '/sign-up', element: <SignUp />},
+  {path: '/login', element: <LoginPage />},
+  {path: '/sign-up', element: <SignUpPage />},
 ]
 
 export default routes;
