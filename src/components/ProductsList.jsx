@@ -11,7 +11,7 @@ function ProductsList() {
         <h4>شناسه کالا</h4>
       </div>
       <ul className="bg-white h-[400px] rounded-b-[30px] border-1 border-[#E4E4E4] overflow-auto ">
-        <li className="pt-4 flex justify-between w-fit border-b-1 border-[#F2F2F2]">
+        <li className="pt-4 flex justify-between border-b-1 border-[#F2F2F2]">
           <div className="flex text-[13px] pr-[52px]">
             <span className="inline-block w-[220px] ml-5 ">
               تیشرت طرح انگولار

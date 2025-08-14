@@ -1,10 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/images/Union.svg";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { registerFormSchema } from "../utils/registerValidation";
 
 function RegisterPage() {
+
   const {
     register,
     handleSubmit,
@@ -15,11 +16,12 @@ function RegisterPage() {
       password: "",
       confirmPassword: "",
     },
-    resolver: yupResolver(registerFormSchema)
+    resolver: yupResolver(registerFormSchema),
   });
 
   const formSubmitting = (data) => {
     console.log(data);
+    
   };
 
   return (
@@ -35,29 +37,35 @@ function RegisterPage() {
               type="text"
               placeholder="نام کاربری"
               className="bg-[#f2f2f2] w-full p-3.5 text-[#28282880] outline-0 rounded-[15px]"
-              {...register(
-                'username'
-              )}
+              {...register("username")}
             />
-            {errors.username && (<span className="text-red-500 inline-block mt-2 mr-2">{errors.username.message}</span>)}
+            {errors.username && (
+              <span className="text-red-500 inline-block mt-2 mr-2">
+                {errors.username.message}
+              </span>
+            )}
             <input
               type="password"
               placeholder="رمز عبور"
               className="bg-[#f2f2f2] w-full p-3.5 text-[#28282880] outline-0 rounded-[15px] mt-4"
-              {...register(
-                'password'
-              )}
+              {...register("password")}
             />
-            {errors.password && (<span className="text-red-500 inline-block mt-2 mr-2">{errors.password.message}</span>)}
+            {errors.password && (
+              <span className="text-red-500 inline-block mt-2 mr-2">
+                {errors.password.message}
+              </span>
+            )}
             <input
               type="password"
               placeholder="تکرار رمز عبور"
               className="bg-[#f2f2f2] w-full p-3.5 text-[#28282880] outline-0 rounded-[15px] mt-4"
-              {...register(
-                'confirmPassword'
-              )}
+              {...register("confirmPassword")}
             />
-            {errors.confirmPassword && (<span className="text-red-500 inline-block mt-2 mr-2">{errors.confirmPassword.message}</span>)}
+            {errors.confirmPassword && (
+              <span className="text-red-500 inline-block mt-2 mr-2">
+                {errors.confirmPassword.message}
+              </span>
+            )}
             <button className="bg-btn w-full py-[11px] text-white text-[20px] rounded-[15px] mt-[35px] cursor-pointer">
               ثبت نام
             </button>

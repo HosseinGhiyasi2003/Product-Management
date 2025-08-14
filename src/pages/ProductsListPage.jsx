@@ -2,12 +2,15 @@ import searchIcon from '../assets/icons/search-normal.svg'
 import logo from '../assets/images/Union.svg'
 import setting from '../assets/icons/setting-3.svg'
 import ProductsList from '../components/ProductsList'
+import EditProductForm from '../components/EditProductForm'
+import AddProductForm from '../components/AddProductForm'
+import DeleteModal from '../components/DeleteModal'
 
 function ProductsListPage() {
   return (
     <>
       <section className="px-4 mt-7">
-        <div className="container">
+        <div className="max-w-[1200px] mx-auto">
           {/* search box */}
           <div className='bg-white px-6 py-1.5 flex justify-between items-center border-1 border-[#E4E4E4] rounded-2xl'>
             <div className='flex gap-x-3'>
@@ -32,6 +35,9 @@ function ProductsListPage() {
           <ProductsList/>
         </div>
       </section>
+      {/* <AddProductForm/> */}
+      {/* <EditProductForm/> */}
+      {/* <DeleteModal/> */}
     </>
   )
 }
