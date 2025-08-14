@@ -1,7 +1,47 @@
+import { useQuery } from "@tanstack/react-query";
 import editIcon from "../assets/icons/edit.svg";
 import trashIcon from "../assets/icons/trash.svg";
+import axiosInstance from "../services/axiosInstance";
+import { BeatLoader } from "react-spinners";
 
 function ProductsList() {
+  const fetchProducts = async ({ queryKey }) => {
+    const [key, page, limit] = queryKey;
+    try {
+      const response = await axiosInstance.get(
+        `/products?page=${page}&limit=${limit}`
+      );
+      return response.data.data; // فرض می‌کنیم آرایه محصولات اینجاست
+    } catch (error) {
+      // ساختن یک پیام کاربر پسند
+      if (!error.response) {
+        // یعنی مشکل از اینترنت یا دسترسی به سروره
+        throw new Error("اتصال به اینترنت برقرار نیست یا سرور در دسترس نیست.");
+      } else {
+        throw new Error(error.response.data.message || "خطایی رخ داده است.");
+      }
+    }
+  };
+
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: ["products", 1, 5],
+    queryFn: fetchProducts,
+    retry: false,
+  });
+
+  if (isPending)
+    return (
+      <div className="flex justify-center items-center min-h-40">
+        <BeatLoader color="#55A3F0" size={50} />
+      </div>
+    );
+  if (isError) {
+    return (
+      <div className="flex justify-center items-center min-h-40">
+        <p className="text-red-500">{error.message}</p>
+      </div>
+    );
+  }
   return (
     <div className="mt-5 ">
       <div className="flex border-1 border-[#E4E4E4] rounded-t-[30px] text-[#282828] bg-[#F2F2F2] px-[52px] gap-x-[200px] text-[14px] font-medium py-[25px] overflow-auto">
@@ -11,26 +51,30 @@ function ProductsList() {
         <h4>شناسه کالا</h4>
       </div>
       <ul className="bg-white h-[400px] rounded-b-[30px] border-1 border-[#E4E4E4] overflow-auto ">
-        <li className="pt-4 flex justify-between border-b-1 border-[#F2F2F2]">
-          <div className="flex text-[13px] pr-[52px]">
-            <span className="inline-block w-[220px] ml-5 ">
-              تیشرت طرح انگولار
-            </span>
-            <span className="inline-block w-[220px] ml-5">۲۹۳</span>
-            <span className="inline-block w-[220px] ml-5">90 هزار تومان</span>
-            <span className="inline-block w-[220px] ml-5">
-              90uf9g9h7895467g974
-            </span>
-          </div>
-          <div className="flex items-center gap-x-3.5 pl-[52px]">
-            <div className="cursor-pointer size-10">
-              <img src={editIcon} alt="" />
+        {data.map((product) => (
+          <li className="pt-4 flex justify-between border-b-1 border-[#F2F2F2]">
+            <div className="flex text-[13px] pr-[52px]">
+              <span className="inline-block w-[220px] ml-5 ">
+                {product.name}
+              </span>
+              <span className="inline-block w-[220px] ml-5">
+                {product.price}
+              </span>
+              <span className="inline-block w-[220px] ml-5">
+                {product.quantity} هزار تومان
+              </span>
+              <span className="inline-block w-[220px] ml-5">{product.id}</span>
             </div>
-            <div className="cursor-pointer size-10">
-              <img src={trashIcon} alt="" />
+            <div className="flex items-center gap-x-3.5 pl-[52px]">
+              <div className="cursor-pointer size-10">
+                <img src={editIcon} alt="" />
+              </div>
+              <div className="cursor-pointer size-10">
+                <img src={trashIcon} alt="" />
+              </div>
             </div>
-          </div>
-        </li>
+          </li>
+        ))}
       </ul>
     </div>
   );
