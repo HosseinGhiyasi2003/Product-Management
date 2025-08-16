@@ -5,8 +5,13 @@ import ProductsList from '../components/ProductsList'
 import EditProductForm from '../components/EditProductForm'
 import AddProductForm from '../components/AddProductForm'
 import DeleteModal from '../components/DeleteModal'
+import { useContext } from 'react'
+import { FormAndModalContext } from '../context/FormAndModalProvider'
 
 function ProductsListPage() {
+  const {isAddFormOpen, setIsAddFormOpen, isDeleteModalOpen , setIsDeleteModalOpen, isEditModalOpen, setIsEditModalOpen} = useContext(FormAndModalContext)
+
+
   return (
     <>
       <section className="px-4 mt-7">
@@ -30,14 +35,14 @@ function ProductsListPage() {
               <img src={setting} alt="" />
               <span className='text-2xl text-[#282828]'>مدیریت کالا</span>
             </div>
-            <button className='bg-btn text-white px-[17px] py-2.5 rounded-[10px]'>افزودن محصول</button>
+            <button onClick={() => setIsAddFormOpen(true)} className='bg-btn text-white px-[17px] py-2.5 rounded-[10px] cursor-pointer'>افزودن محصول</button>
           </div>
           <ProductsList/>
         </div>
       </section>
-      {/* <AddProductForm/> */}
-      {/* <EditProductForm/> */}
-      {/* <DeleteModal/> */}
+      {isAddFormOpen && <AddProductForm isAddFormOpen={isAddFormOpen} setIsAddFormOpen={setIsAddFormOpen} />}
+      {isEditModalOpen && <EditProductForm isEditModalOpen={isEditModalOpen} setIsEditModalOpen={setIsEditModalOpen} />}
+      {isDeleteModalOpen && <DeleteModal isDeleteModalOpen={isDeleteModalOpen} setIsDeleteModalOpen={setIsDeleteModalOpen} />}
     </>
   )
 }
