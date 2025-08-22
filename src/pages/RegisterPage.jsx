@@ -3,13 +3,17 @@ import logo from "../assets/images/Union.svg";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { registerFormSchema } from "../utils/registerValidation";
+import { registerUser } from "../services/authApi";
+import { useState } from "react";
 
 function RegisterPage() {
+  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       username: "",
@@ -19,10 +23,28 @@ function RegisterPage() {
     resolver: yupResolver(registerFormSchema),
   });
 
-  const formSubmitting = (data) => {
-    console.log(data);
-    
-  };
+  const formSubmitting = async (data) => {
+  try {
+    setErrorMessage(""); // پاک کردن خطای قبلی
+    const res = await registerUser(data);
+
+    // ✅ موفقیت
+    if (res) {
+      navigate("/login");
+    }
+  } catch (err) {
+    // ✅ خطا از سمت بک‌اند
+    const backendMessage = err.response?.data?.message;
+
+    if (backendMessage === "User already exists") {
+      setErrorMessage("کاربر درحال حاضر وجود دارد");
+    } else {
+      setErrorMessage("ثبت نام ناموفق بود! دوباره تلاش کنید");
+    }
+  }
+};
+
+
 
   return (
     <section className="px-4">
@@ -44,6 +66,7 @@ function RegisterPage() {
                 {errors.username.message}
               </span>
             )}
+
             <input
               type="password"
               placeholder="رمز عبور"
@@ -55,6 +78,7 @@ function RegisterPage() {
                 {errors.password.message}
               </span>
             )}
+
             <input
               type="password"
               placeholder="تکرار رمز عبور"
@@ -66,8 +90,17 @@ function RegisterPage() {
                 {errors.confirmPassword.message}
               </span>
             )}
-            <button className="bg-btn w-full py-[11px] text-white text-[20px] rounded-[15px] mt-[35px] cursor-pointer">
-              ثبت نام
+
+            {/* پیام خطا */}
+            {errorMessage && (
+              <p className="text-red-500 text-sm mt-3">{errorMessage}</p>
+            )}
+
+            <button
+              disabled={isSubmitting}
+              className="bg-btn w-full py-[11px] text-white text-[20px] rounded-[15px] mt-[35px] cursor-pointer disabled:opacity-50"
+            >
+              {isSubmitting ? "در حال ثبت..." : "ثبت نام"}
             </button>
           </form>
           <Link

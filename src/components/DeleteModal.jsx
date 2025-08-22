@@ -2,17 +2,20 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import deleteImg from "../assets/images/close.svg";
 import axios from "axios";
 import axiosInstance from "../services/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 function DeleteModal({ isDeleteModalOpen, setIsDeleteModalOpen }) {
   const queryClient = useQueryClient();
+  const navigate = useNavigate()
 
   const mutationFn = async (id) => {
     try {
       return await axiosInstance.delete(`/products/${id}`);
     } catch (error) {
-      if (!error.response) {
-      throw new Error("کاربر گرامی، خطایی رخ داده است.");
-    }
+      if(error.response.status === 403 || error.response.status === 401) {
+        navigate('/login')
+        
+      };
     }
   };
 

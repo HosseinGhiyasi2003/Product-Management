@@ -3,14 +3,17 @@ import logo from "../assets/images/Union.svg";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginFormSchema } from "../utils/loginValidation";
-
+import { loginUser } from "../services/authApi";
+import { useState } from "react";
 
 function LoginPage() {
+  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       username: "",
@@ -19,9 +22,24 @@ function LoginPage() {
     resolver: yupResolver(loginFormSchema),
   });
 
-  const formSubmitting = (data) => {
-    console.log(data);
-    
+  const formSubmitting = async (data) => {
+    try {
+      setErrorMessage(""); // پاک کردن خطای قبلی
+      const res = await loginUser(data);
+
+      // ✅ موفقیت
+      if (res) {
+        navigate("/products"); // مثلا برو به صفحه محصولات
+      }
+    } catch (err) {
+      const backendMessage = err.message || err.response?.data?.message;
+
+      if (backendMessage === "Invalid credentials") {
+        setErrorMessage("نام کاربری یا رمز عبور اشتباه است");
+      } else {
+        setErrorMessage("ورود ناموفق بود! دوباره تلاش کنید");
+      }
+    }
   };
 
   return (
@@ -44,6 +62,7 @@ function LoginPage() {
                 {errors.username.message}
               </span>
             )}
+
             <input
               type="password"
               placeholder="رمز عبور"
@@ -56,8 +75,16 @@ function LoginPage() {
               </span>
             )}
 
-            <button className="bg-btn w-full py-[11px] text-white text-[20px] rounded-[15px] mt-[35px] cursor-pointer">
-              ورود
+            {/* پیام خطا */}
+            {errorMessage && (
+              <p className="text-red-500 text-sm mt-3">{errorMessage}</p>
+            )}
+
+            <button
+              disabled={isSubmitting}
+              className="bg-btn w-full py-[11px] text-white text-[20px] rounded-[15px] mt-[35px] cursor-pointer disabled:opacity-50"
+            >
+              {isSubmitting ? "در حال ورود..." : "ورود"}
             </button>
           </form>
           <Link

@@ -3,10 +3,12 @@ import { useForm } from "react-hook-form";
 import { addProductFormSchema } from "../utils/addProductValidation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../services/axiosInstance";
+import { useNavigate } from "react-router-dom";
 // اگر خواستی بعداً با توکن کار کنی: import axiosInstance from "../services/axiosInstance";
 
 function AddProductForm({ isAddFormOpen, setIsAddFormOpen }) {
   const queryClient = useQueryClient();
+  const navigate = useNavigate()
 
   const {
     register,
@@ -23,7 +25,14 @@ function AddProductForm({ isAddFormOpen, setIsAddFormOpen }) {
 
   // تابع اضافه کردن محصول
   const mutationFn = async (newProduct) => {
-    return await axiosInstance.post("/products", newProduct);
+    try {
+      return await axiosInstance.post("/products", newProduct);
+    } catch (error) {
+      if(error.response.status === 403 || error.response.status === 401) {
+        navigate('/login')
+        
+      };
+    }
   };
 
   const { mutate, isPending, isError, error, isSuccess } = useMutation({

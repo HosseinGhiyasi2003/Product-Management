@@ -23,13 +23,13 @@ function ProductsListPage() {
     keepPreviousData: true,
   });
 
-  console.log(data);
+  // console.log(data);
 
-  useEffect(() => {
-    if(data.products.length === 0) {
-      setPage(1)
-    }
-  })
+  // useEffect(() => {
+  //   if(data.products.length === 0) {
+  //     setPage(1)
+  //   }
+  // })
   
 
   const totalPages = data?.totalPages ?? 1;
@@ -87,7 +87,7 @@ function ProductsListPage() {
       </section>
 
       {isAddFormOpen && <AddProductForm setIsAddFormOpen={setIsAddFormOpen} />}
-      {isEditModalOpen && <EditProductForm />}
+      {isEditModalOpen && <EditProductForm isEditModalOpen={isEditModalOpen} setIsEditModalOpen={setIsEditModalOpen} />}
       {isDeleteModalOpen && <DeleteModal isDeleteModalOpen={isDeleteModalOpen} setIsDeleteModalOpen={setIsDeleteModalOpen} />}
     </>
   );

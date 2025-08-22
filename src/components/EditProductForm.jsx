@@ -3,12 +3,15 @@ import { useForm } from "react-hook-form";
 import { addProductFormSchema } from "../utils/addProductValidation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../services/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 function EditProductForm({
   isEditModalOpen: { id, name, price, quantity },
   setIsEditModalOpen,
 }) {
   const queryClient = useQueryClient();
+  const navigate = useNavigate()
+  
 
   const {
     register,
@@ -25,7 +28,13 @@ function EditProductForm({
 
   const { mutate, isPending, isError, error, isSuccess } = useMutation({
     mutationFn: (editProductData) => {
-      return axiosInstance.put(`products/${id}`, editProductData);
+      try {
+        return axiosInstance.put(`products/${id}`, editProductData);
+      } catch (error) {
+        if (error.response.status === 403 || error.response.status === 401) {
+          navigate("/login");
+        }
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["products"]);
